@@ -2,50 +2,80 @@ require 'pg'
 require 'elasticsearch'
 require 'json'
 
-# Pull all document records from the DB
-# conn = PG.connect('localhost', 5432, '', '', 'recogito-test', 'postgres', 'postgres')
+def fetch_documents() 
+  conn = PG.connect('localhost', 5432, '', '', 'recogito-test', 'postgres', 'postgres')
 
-# sql = 'SELECT author, title, owner, date_numeric FROM document'
-# records = conn.exec(sql).select { |r| r['title'] != 'Welcome to Recogito' }
+  sql = 'SELECT id, title FROM document'
+  records = conn.exec(sql).select { |r| r['title'] != 'Welcome to Recogito' }
 
-# Step 2: for each document, pull an aggregation from the index
-#  - aggregate by URI
-#  - get URI counts
-#  - top 100 (?) places only
-client = Elasticsearch::Client.new
+  records.map { |row| row['id'] } # that's all we need
+end
 
-response = client.search index: 'recogito', type: 'annotation', size: 0, body: { 
-  query: { 
-    bool: {
-      must: [{
-        term: { 
-          'annotates.document_id': 'fb2f3hm1ihnwgn' 
-        }
-      },{
-        nested: {
-          path: 'bodies',
-          query: {
-            term: { 'bodies.type': 'PLACE' }
+def build_vector(client, document_id)
+  response = client.search index: 'recogito', type: 'annotation', size: 0, body: { 
+    query: { 
+      bool: {
+        must: [{
+          term: { 
+            'annotates.document_id': document_id 
           }
-        }
-      }]
-    }
-  },
-  aggregations: {
-    bodies: {
-      nested: {
-        path: 'bodies'
-      },
-      aggregations: {
-        uris: {
-          terms: { field: 'bodies.reference.uri' }
+        },{
+          nested: {
+            path: 'bodies',
+            query: {
+              term: { 'bodies.type': 'PLACE' }
+            }
+          }
+        }]
+      }
+    },
+    aggregations: {
+      bodies: {
+        nested: {
+          path: 'bodies'
+        },
+        aggregations: {
+          uris: {
+            terms: { field: 'bodies.reference.uri' }
+          }
         }
       }
     }
   }
-}
 
-puts JSON.pretty_generate(response)
+  '''
+  Response format is as follows:
+
+  {
+    ...
+    aggregations: {
+      bodies: {
+        doc_count: ...
+        uris: {
+          ...
+          buckets: [
+            { key:..., doc_count: ...}
+          ]
+        }
+      }
+    }
+  }
+  '''
+
+  buckets = response['aggregations']['bodies']['uris']['buckets']
+  buckets.map { |b| [ b['key'], b['doc_count'] ] }.to_h
+end
+
+client = Elasticsearch::Client.new
+vectors = fetch_documents()
+  .map { |id| { document_id: id, uris: build_vector(client, id) } }
+  .select { |v| !v[:uris].empty? }
+
+puts JSON.pretty_generate(vectors)
+
+
+
+
 
 
 
