@@ -1,5 +1,4 @@
 import textdistance
-# from pyjarowinkler import distance
 
 class MetadataSimilarity:
 
@@ -17,7 +16,6 @@ class MetadataSimilarity:
             (not inner_doc.title.lower().startswith('test'))):
 
           ctr = ctr + 1 
-          # similarity = distance.get_jaro_distance(outer_doc.title, inner_doc.title, winkler=True)
           similarity = textdistance.jaro_winkler(outer_doc.title, inner_doc.title)
           if (similarity > 0.9):
             print(f"{outer_doc.title} ({outer_doc.owner}) - {inner_doc.title} ({inner_doc.owner}): {similarity}")
