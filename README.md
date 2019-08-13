@@ -16,3 +16,7 @@ own environment.
 
 ## Python Scripts
 
+## Notes
+
+- Jaro-Winkler comparison is twice as fast in Ruby than in Python
+
