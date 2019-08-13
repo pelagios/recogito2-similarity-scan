@@ -12,6 +12,7 @@ puts "Computing distances for #{records.size} records"
 start = Time.now
 
 # Run any-to-any Jaro-Winkler comparison
+ctr = 0
 records.each do |this_row|
   records.each do |that_row|
     if this_row != that_row
@@ -21,6 +22,7 @@ records.each do |this_row|
       b = that_row['title']
       b_owner = that_row['owner']
 
+      ctr++
       dist = JaroWinkler.distance(a, b)
 
       if dist > 0.92 && a_owner != b_owner && !a.downcase.include?("test")
@@ -30,6 +32,7 @@ records.each do |this_row|
   end
 end
 
+puts "Ran #{ctr} comparisons"
 puts "Done. Took #{Time.now - start}s"
 
 
