@@ -16,6 +16,10 @@ own environment.
 
 ## Python Scripts
 
+`pip install textdistance[JaroWinkler]`
+
+`pip install elasticsearch==5.5.3`
+
 ## Notes
 
 - Jaro-Winkler comparison is twice as fast in Ruby than in Python
