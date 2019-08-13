@@ -118,13 +118,14 @@ if __FILE__==$0
 
   puts "Got #{vectors.size} non-empty vectors documents"
   # puts JSON.pretty_generate(vectors)
+
   puts "Computing pair-wise similarity"
 
   vectors.each do |outer|
     # TODO this will compute every pair twice... optimize
     vectors.each do |inner|
       if outer != inner 
-        similarity = similarity(outer, inner)
+        similarity = Similarity.compute(outer, inner)
         if (similarity > 0)
           puts "#{outer[:document_id]} - #{inner[:document_id]}: #{similarity(outer, inner)}"
         end
