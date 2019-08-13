@@ -2,11 +2,11 @@ from elasticsearch import Elasticsearch
 
 class Entities:
 
+  es = Elasticsearch()
+
   @staticmethod
   def build_vector(document_id):
-    es = Elasticsearch()
-
-    response = es.search(index='recogito', doc_type='annotation', params={ 'size': 0 }, body={ 
+    response = Entities.es.search(index='recogito', doc_type='annotation', params={ 'size': 0 }, body={ 
       'query': { 
         'bool': {
           'must': [{
