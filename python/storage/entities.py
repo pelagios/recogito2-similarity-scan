@@ -37,5 +37,5 @@ class Entities:
       }
     })
 
-    print(response)
-    return
+    buckets = response['aggregations']['bodies']['uris']['buckets']
+    return list(map(lambda b: [ b['key'], b['doc_count'] ], buckets))
