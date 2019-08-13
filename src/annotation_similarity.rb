@@ -6,9 +6,7 @@ def fetch_documents()
   conn = PG.connect('localhost', 5432, '', '', 'recogito-test', 'postgres', 'postgres')
 
   sql = 'SELECT id, title FROM document'
-  records = conn.exec(sql).select { |r| r['title'] != 'Welcome to Recogito' }
-
-  records.map { |row| row['id'] } # that's all we need
+  conn.exec(sql).select { |r| r['title'] != 'Welcome to Recogito' }
 end
 
 def build_vector(client, document_id)
@@ -107,7 +105,8 @@ if __FILE__==$0
   '''
   Fetch all document IDs from the DB
   '''
-  document_ids = fetch_documents()
+  documents = fetch_documents()
+  document_ids = documents.map { |row| row['id'] } # that's all we need
 
   puts "Building vectors for #{document_ids.size} documents (may take a while)"
 
@@ -121,13 +120,17 @@ if __FILE__==$0
 
   puts "Computing pair-wise similarity"
 
-  vectors.each do |outer|
+  vectors.each_with_index do |outer, outer_idx|
     # TODO this will compute every pair twice... optimize
-    vectors.each do |inner|
-      if outer != inner 
+    vectors.each_with_index do |inner, inner_idx|
+      if outer_idx < inner_idx
         similarity = Similarity.compute(outer, inner)
-        if (similarity > 0)
-          puts "#{outer[:document_id]} - #{inner[:document_id]}: #{similarity(outer, inner)}"
+
+        if (similarity > 0.9)
+          doc_a = documents.detect { |row| row['id'] == outer[:document_id] }
+          doc_b = documents.detect { |row| row['id'] == inner[:document_id] }
+
+          puts "#{doc_a['title']} - #{doc_b['title']}: #{similarity}"
         end
       end
     end
