@@ -87,14 +87,13 @@ class Similarity
     count_a = values_a.reduce(0) { |sum, tuple| sum + tuple[1] }
     count_b = values_b.reduce(0) { |sum, tuple| sum + tuple[1] }
 
-    uris_a = values_a.map { |tuple| tuple[0] }
+    intersection = values_a.reduce(0) do |sum, tuple_a| 
+      tuple_b = values_b.detect { |t| t[0] == tuple_a[0] }
 
-    intersection = values_b.reduce(0) do |sum, tuple| 
-      uri_b = tuple[0]
-      if uris_a.include?(uri_b)
-        sum + tuple[1]
+      if tuple_b.nil?
+        sum
       else
-      sum
+        sum + tuple_a[1] + tuple_b[1]
       end
     end
 
