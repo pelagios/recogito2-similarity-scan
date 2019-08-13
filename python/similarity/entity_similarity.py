@@ -23,14 +23,13 @@ class EntitySimilarity:
 
   @staticmethod
   def compute_pairwise(vectors):
-    ctr = 0
+    results = []
+
     for outer_idx, outer_vec in enumerate(vectors):
       for inner_idx, inner_vec in enumerate(vectors): 
         if (outer_idx < inner_idx):
-          ctr = ctr + 1
           similarity = EntitySimilarity.jaccard_similarity(outer_vec, inner_vec)
           if (similarity > 0.9):
-            print(f"{outer_vec['document_id']} - {inner_vec['document_id']}: {similarity}")
+            results.append({ 'vec_a': outer_vec, 'vec_b': inner_vec, 'score': similarity })
 
-    print(f"Ran {ctr} comparisons")
-    return
+    return results

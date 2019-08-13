@@ -4,7 +4,8 @@ class MetadataSimilarity:
 
   @staticmethod
   def compute_pairwise(documents):
-    ctr = 0
+    results = []
+
     for outer_idx, outer_doc in enumerate(documents):
       for inner_idx, inner_doc in enumerate(documents):
 
@@ -15,11 +16,10 @@ class MetadataSimilarity:
             (not outer_doc.title.lower().startswith('test')) and 
             (not inner_doc.title.lower().startswith('test'))):
 
-          ctr = ctr + 1 
           similarity = textdistance.jaro_winkler(outer_doc.title, inner_doc.title)
           if (similarity > 0.9):
-            print(f"{outer_doc.title} ({outer_doc.owner}) - {inner_doc.title} ({inner_doc.owner}): {similarity}")
+            results.append({ 'doc_a': outer_doc, 'doc_b': inner_doc, 'score': similarity })
 
-    print(f"Ran {ctr} comparisons")
+    return results
   
     
