@@ -14,4 +14,4 @@ class DB:
     port = config['DB'].get('port')
     name = config['DB'].get('db_name')
 
-    return f"{db}://{user}:{pw}@{host}:{port}/{name}"
+    return "{0}://{1}:{2}@{3}:{4}/{5}".format(db, user, pw, host, port, name)
