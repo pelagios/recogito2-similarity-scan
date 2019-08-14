@@ -37,3 +37,20 @@ $ pip install elasticsearch==5.5.3 # 5.x required for Recogito - don't use newer
 
 Create a copy of `config.ini.template` named `config.ini` and modify according to your DB settings.
 
+### Exploring the data
+
+Handy SQL query to explore the raw data in the DB:
+
+```sql
+SELECT 
+  similarity.*,
+  doc_a.title,
+  doc_b.title
+FROM similarity
+JOIN document doc_a
+  ON doc_a.id = doc_id_a
+JOIN document doc_b
+  ON doc_b.id = doc_id_b
+WHERE entity_jaccard > 0;
+```
+
