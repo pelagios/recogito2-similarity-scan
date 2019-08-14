@@ -13,9 +13,9 @@ class Similarities:
       score = s['score']
       db.execute(f"""INSERT INTO similarity 
         (doc_id_a, doc_id_b, title_jaro_winkler) 
-      VALUES ('{a}', '{b}', {score})
+      VALUES ('{0}', '{1}', {2})
       ON CONFLICT(doc_id_a, doc_id_b) DO UPDATE
-        SET title_jaro_winkler = {score}""")
+        SET title_jaro_winkler = {3}""".format(a, b, score, score))
 
   @staticmethod
   def store_entity_similarity(scores):
@@ -27,6 +27,6 @@ class Similarities:
       score = s['score']
       db.execute(f"""INSERT INTO similarity 
         (doc_id_a, doc_id_b, entity_jaccard) 
-      VALUES ('{a}', '{b}', {score})
+      VALUES ('{0}', '{1}', {2})
       ON CONFLICT(doc_id_a, doc_id_b) DO UPDATE
-        SET entity_jaccard = {score}""")
+        SET entity_jaccard = {3}""".format(a, b, score, score))
