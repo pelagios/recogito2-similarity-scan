@@ -20,6 +20,8 @@ own environment.
 
 `pip install elasticsearch==5.5.3`
 
+`pip3 install psycopg2`
+
 Create a copy of `config.ini.template` named `config.ini` and modify according to your DB settings.
 
 ## Notes
