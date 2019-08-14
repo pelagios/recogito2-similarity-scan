@@ -20,6 +20,8 @@ own environment.
 
 `pip install elasticsearch==5.5.3`
 
+Create a copy of `config.ini.template` named `config.ini` and modify according to your DB settings.
+
 ## Notes
 
 - Jaro-Winkler comparison is twice as fast in Ruby than in Python

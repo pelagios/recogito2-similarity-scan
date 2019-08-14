@@ -1,11 +1,11 @@
+from storage.db import DB
 from sqlalchemy import create_engine
 
 class Similarities:
 
   @staticmethod
   def store_metadata_similarity(scores):
-    db_string = "postgresql://postgres:postgres@localhost:5432/recogito-test"
-    db = create_engine(db_string)
+    db = create_engine(DB.get_db_string())
 
     for s in scores:
       a = s['doc_a']['id']
@@ -19,8 +19,7 @@ class Similarities:
 
   @staticmethod
   def store_entity_similarity(scores):
-    db_string = "postgresql://postgres:postgres@localhost:5432/recogito-test"
-    db = create_engine(db_string)
+    db = create_engine(DB.get_db_string())
 
     for s in scores:
       a = s['vec_a']['document_id']
