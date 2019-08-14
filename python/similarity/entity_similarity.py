@@ -29,7 +29,7 @@ class EntitySimilarity:
       for inner_idx, inner_vec in enumerate(vectors): 
         if (outer_idx < inner_idx):
           similarity = EntitySimilarity.jaccard_similarity(outer_vec, inner_vec)
-          if (similarity > 0.9):
+          if (similarity > 0.65):
             results.append({ 'vec_a': outer_vec, 'vec_b': inner_vec, 'score': similarity })
 
     return results
