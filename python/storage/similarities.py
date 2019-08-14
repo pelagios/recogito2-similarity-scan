@@ -11,7 +11,7 @@ class Similarities:
       a = s['doc_a']['id']
       b = s['doc_b']['id']
       score = s['score']
-      db.execute(f"""INSERT INTO similarity 
+      db.execute("""INSERT INTO similarity 
         (doc_id_a, doc_id_b, title_jaro_winkler) 
       VALUES ('{0}', '{1}', {2})
       ON CONFLICT(doc_id_a, doc_id_b) DO UPDATE
@@ -25,7 +25,7 @@ class Similarities:
       a = s['vec_a']['document_id']
       b = s['vec_b']['document_id']
       score = s['score']
-      db.execute(f"""INSERT INTO similarity 
+      db.execute("""INSERT INTO similarity 
         (doc_id_a, doc_id_b, entity_jaccard) 
       VALUES ('{0}', '{1}', {2})
       ON CONFLICT(doc_id_a, doc_id_b) DO UPDATE
